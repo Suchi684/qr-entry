@@ -33,7 +33,7 @@ $env:SUPABASE_DB_PASSWORD="<YOUR_DB_PASSWORD>"
 
 Open:
 
-`https://railway.com/deploy/feisty-compassion/api/health/db`
+`qr-entry-production.up.railway.app/health/db`
 
 Expected response includes:
 
