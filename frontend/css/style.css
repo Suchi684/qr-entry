@@ -1,0 +1,22 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f8f9fa;
+}
+
+.sidebar h5 {
+  font-weight: bold;
+  border-bottom: 1px solid #888;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+}
+
+.qr-img {
+  width: 60px;
+  height: 60px;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    margin-bottom: 20px;
+  }
+}

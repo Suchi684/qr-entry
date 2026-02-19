@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BB Meet | QR Pass</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    body {
+      margin: 0;
+      background: url('img/meetup.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff3b0;
+      overflow-x: hidden;
+      text-align: center;
+    }
+  
+    /* ✨ Logo Layout */
+    .logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      padding-top: 20px;
+      flex-wrap: wrap;
+    }
+  
+    .bb-logo {
+      height: 90px;
+      width: auto;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.8), 0 5px 15px rgba(0, 0, 0, 0.4);
+      transform: scale(1.05);
+      z-index: 1;
+    }
+  
+    .urbancode-logo {
+      height: 45px;
+      opacity: 0.9;
+      transform: translateY(10px);
+      filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.2));
+    }
+  
+    /* 👑 Heading with Stage Glow */
+    h2.welcome {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #ffd700;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      text-shadow: 1px 1px 2px #000, 0 0 8px #ffcc00, 0 0 12px #ffcc00;
+      animation: flicker 2s infinite;
+    }
+  
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.9; text-shadow: 0 0 10px #fff700; }
+    }
+  
+    /* 🎟️ Event Pass Container */
+    .card-box {
+      max-width: 520px;
+      margin: 20px auto;
+      background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.5), rgba(55, 0, 0, 0.4));
+      border-radius: 20px;
+      padding: 40px 30px;
+      border: 2px solid rgba(255, 215, 0, 0.6);
+      box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.5),
+        0 0 30px rgba(255, 215, 0, 0.2),
+        inset 0 0 20px rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(6px);
+    }
+  
+    .attendee-name {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 25px;
+      text-shadow: 1px 1px 2px #000;
+    }
+  
+    /* 🎯 QR code area */
+    canvas {
+      border-radius: 15px;
+      background: #fff;
+      padding: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+    }
+  
+    /* ✨ Golden Button */
+    .btn-golden {
+      background: linear-gradient(145deg, #ffd700, #ffae00);
+      color: #2d0000;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 30px;
+      font-size: 16px;
+      transition: 0.4s ease-in-out;
+      box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+    }
+  
+    .btn-golden:hover {
+      background: linear-gradient(145deg, #ffae00, #ffd700);
+      box-shadow: 0 0 12px #ffcc00, 0 0 20px #ffd700;
+      transform: translateY(-2px);
+    }
+  
+    /* 🧾 Footer CTA */
+    .footer-cta {
+      margin-top: 50px;
+      font-size: 0.95rem;
+      color: #222;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 12px 25px;
+      border-radius: 10px;
+      display: inline-block;
+      font-weight: 500;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+  
+    .footer-cta a {
+      color: #b8860b;
+      font-weight: 600;
+      text-decoration: none;
+    }
+  
+    .footer-cta a:hover {
+      text-decoration: underline;
+      color: #ff8c00;
+    }
+  
+    /* 🌐 Responsive */
+    @media (max-width: 576px) {
+      .logos {
+        flex-direction: column;
+        gap: 15px;
+      }
+  
+      .attendee-name {
+        font-size: 1.5rem;
+      }
+  
+      .card-box {
+        margin: 20px 15px;
+      }
+    }
+  </style>
+  
+</head>
+<body>
+
+  <!-- 👑 Logo Row -->
+<div class="logos mb-2">
+  <img src="img/bb.jpg" alt="BB Meet Logo" class="bb-logo" />
+  <img src="img/logo.png" alt="Urbancode Logo" class="urbancode-logo" />
+</div>
+
+<h2 class="welcome">🎉 WELCOME TO BB GRAND MEET 2026 🎉</h2>
+
+
+  <!-- 🔲 QR Card -->
+  <div class="card-box">
+    <div class="attendee-name" id="qrName">Loading...</div>
+    <canvas id="qrCanvas"></canvas>
+    <button id="downloadBtn" class="btn btn-golden">⬇️ Download QR Pass</button>
+  </div>
+
+  <!-- 🔗 Footer -->
+  <div class="footer-cta">
+    Need a custom website or app for your business?<br>
+    <a href="https://urbancode.in/projects/services.html" target="_blank">
+      Contact Urbancode Edutech Solutions Pvt Ltd
+    </a>
+  </div>
+
+  <script>
+    const API_BASE = "http://localhost:8080/api";
+
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    const member = getQueryParam("member");
+
+    if (!member) {
+      document.getElementById("qrName").textContent = "No name provided";
+      Swal.fire("Error", "No candidate name provided in the URL.", "error");
+    } else {
+      document.getElementById("qrName").textContent = "Loading...";
+
+      fetch(`${API_BASE}/members/lookup?member=${encodeURIComponent(member)}`)
+        .then(response => {
+          if (response.status === 404) {
+            throw new Error("NOT_FOUND");
+          }
+          if (!response.ok) throw new Error("FETCH_FAILED");
+          return response.json();
+        })
+        .then(member => {
+          document.getElementById("qrName").textContent = member.name;
+
+          const canvas = document.getElementById("qrCanvas");
+          QRCode.toCanvas(canvas, member.name, { width: 250 }, function (error) {
+            if (error) {
+              console.error(error);
+              Swal.fire("Error", "Failed to generate QR code.", "error");
+            }
+          });
+
+          document.getElementById("downloadBtn").onclick = () => {
+            const link = document.createElement("a");
+            link.download = `${member.name.replace(/\s+/g, "_")}_QR.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+          };
+        })
+        .catch(err => {
+          console.error(err);
+          document.getElementById("qrName").textContent = "Not Found";
+          if (err.message === "NOT_FOUND") {
+            Swal.fire("Error", `"${member}" is not a registered member.`, "error");
+          } else {
+            Swal.fire("Error", "Unable to verify member from backend.", "error");
+          }
+        });
+    }
+  </script>
+</body>
+</html>

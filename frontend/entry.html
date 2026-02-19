@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BB Meet | Entry Scanner</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body { background: linear-gradient(to right, #e0f7fa, #ffffff); font-family: 'Segoe UI', sans-serif; }
+    .scanner-box { background-color: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 0 12px rgba(0, 0, 0, 0.05); }
+    .table thead th { font-weight: 600; }
+    .status-cell { font-size: 1.2rem; }
+    .scan-title { font-weight: bold; color: #0d6efd; }
+    @media (max-width: 576px) {
+      .scanner-box { padding: 10px; }
+      .scan-title { font-size: 1.3rem; }
+      .table td, .table th { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-4">
+    <div class="text-center mb-3">
+      <a href="index.html" class="btn btn-outline-primary">Back to Main Dashboard</a>
+    </div>
+
+    <div class="text-center mb-4">
+      <h2 class="scan-title">SCAN MODE: <span id="scanModeTitle">ENTRY</span></h2>
+    </div>
+
+    <div class="scanner-box mx-auto mb-4" style="max-width: 400px;">
+      <div id="qr-reader" style="width: 100%;"></div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover table-striped text-center">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="scanTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "http://localhost:8080/api";
+    const scanMode = "entry";
+    let members = [];
+    let scanCooldown = false;
+    const alreadyWarned = new Set();
+
+    document.getElementById("scanModeTitle").textContent = scanMode.toUpperCase();
+
+    async function loadMembers() {
+      try {
+        const response = await fetch(`${API_BASE}/members`);
+        if (!response.ok) throw new Error("Failed to load attendees");
+        members = await response.json();
+        members.sort((a, b) => a.name.localeCompare(b.name));
+        renderScanTable();
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error", "Unable to load attendees from backend.", "error");
+      }
+    }
+
+    function renderScanTable() {
+      const tableBody = document.getElementById("scanTableBody");
+      tableBody.innerHTML = "";
+      members.forEach((m, i) => {
+        const status = m.scan?.[scanMode] ? "✅" : "❌";
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${i + 1}</td><td>${m.name}</td><td class="status-cell">${status}</td>`;
+        tableBody.appendChild(tr);
+      });
+    }
+
+    function upsertMember(attendee) {
+      const index = members.findIndex(m => m.id === attendee.id);
+      if (index === -1) members.push(attendee);
+      else members[index] = attendee;
+      members.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    async function onScanSuccess(decodedText) {
+      if (scanCooldown) return;
+      scanCooldown = true;
+      const scannedName = decodedText.trim();
+
+      try {
+        const response = await fetch(`${API_BASE}/members/scan`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: scannedName, mode: scanMode })
+        });
+          console.log(response);
+        if (response.status === 404) {
+          Swal.fire("Error", "Name not found in centralized database.", "error");
+          return;
+        }
+        if (!response.ok) {
+          Swal.fire("Error", "Unable to process scan.", "error");
+          return;
+        }
+
+        const payload = await response.json();
+       // upsertMember(payload.attendee);
+        renderScanTable();
+        console.log("Scan result:", payload);
+        if (payload.alreadyScanned) {
+          if (!alreadyWarned.has(scannedName)) {
+            alreadyWarned.add(scannedName);
+            Swal.fire("Already Scanned", `${scanMode.toUpperCase()} already marked for ${scannedName}`, "info");
+            setTimeout(() => alreadyWarned.delete(scannedName), 5000);
+          }
+          return;
+        }
+
+        Swal.fire({
+          icon: "success",
+          title: "Scan Successful",
+          text: `${scanMode.toUpperCase()} marked for ${scannedName}`,
+          timer: 2000,
+          showConfirmButton: false
+        });
+      } finally {
+        setTimeout(() => { scanCooldown = false; }, 1500);
+      }
+    }
+
+    window.onload = () => {
+      loadMembers();
+      new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 }).render(onScanSuccess);
+    };
+  </script>
+</body>
+</html>

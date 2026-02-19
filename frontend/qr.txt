@@ -1,0 +1,16 @@
+project/
+│
+├── index.html          ← Registration Page
+├── scan.html           ← Scanning Dashboard
+├── css/
+│   └── style.css
+├── js/
+│   ├── register.js
+│   ├── scan.js
+│   └── utils.js
+├── libs/
+│   └── sweetalert.min.js
+│   └── qrcode.min.js
+│   └── xlsx.full.min.js  ← For Excel export
+└── data/
+    └── users.json       ← Simulated DB (or API if backend is present)

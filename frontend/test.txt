@@ -1,0 +1,4 @@
+ <a href="scan.html" class="btn btn-success">Scanner</a>
+
+
+  <script src="js/register.js"></script>

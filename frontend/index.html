@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BB Meet | QR Scanner Portal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background: linear-gradient(to right, #f7f7f7, #e0f7ff);
+      font-family: 'Roboto', sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      flex: 1;
+    }
+
+    .navbar {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .dashboard-box {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: 0.3s ease;
+      cursor: pointer;
+      animation: fadeInUp 0.6s ease-in-out;
+    }
+
+    .dashboard-box:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+      background-color: #f9fdff;
+    }
+
+    .dashboard-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 15px 10px;
+      font-size: 0.9rem;
+      color: #555;
+      background-color: #f8f9fa;
+    }
+
+    .footer a {
+      text-decoration: none;
+      color: #007bff;
+      font-weight: 500;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .logo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px 0;
+    }
+
+    .logo-header img {
+      height: 100px;
+      max-width: 200px;
+      object-fit: contain;
+    }
+
+    @media (max-width: 576px) {
+      .dashboard-box h5 {
+        font-size: 1rem;
+      }
+      .logo-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+
+  <script>
+if (localStorage.getItem("isLoggedIn") !== "true") {
+    window.location.href = "login.html";
+}
+</script>
+
+</head>
+<body>
+
+  <!-- 🔝 Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand fw-bold text-primary" href="#">BB Meet</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="member.html">Member</a></li>
+          <li class="nav-item"><a class="nav-link" href="entry.html">Entry</a></li>
+          <li class="nav-item"><a class="nav-link" href="food.html">Food</a></li>
+          <li class="nav-item"><a class="nav-link" href="gift.html">Gift</a></li>
+          <li class="nav-item"><button class="btn btn-outline-danger btn-sm ms-2" onclick="logout()">Logout</button></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 🔰 Top Logos -->
+  <div class="logo-header">
+    <img src="img/bb.jpg" alt="Left Logo" />
+    <img src="img/logo.png" alt="Right Logo" />
+  </div>
+
+  <!-- 📋 Title & Boxes -->
+  <div class="container py-4">
+    <h2 class="text-center mb-4 fw-bold text-primary">📋 BB Meet | QR Scanner Portal</h2>
+
+    <div class="row g-4 justify-content-center">
+      <div class="col-6 col-md-3">
+        <a href="member.html" class="text-decoration-none text-dark" data-bs-toggle="tooltip" title="View member details">
+          <div class="dashboard-box text-center p-4">
+            <div class="dashboard-icon">👤</div>
+            <h5>Member Details</h5>
+          </div>
+        </a>
+      </div>
+      <div class="col-6 col-md-3">
+        <a href="entry.html" class="text-decoration-none text-dark" data-bs-toggle="tooltip" title="Scan entry QR">
+          <div class="dashboard-box text-center p-4">
+            <div class="dashboard-icon">🚪</div>
+            <h5>Entry Scanner</h5>
+          </div>
+        </a>
+      </div>
+      <div class="col-6 col-md-3">
+        <a href="food.html" class="text-decoration-none text-dark" data-bs-toggle="tooltip" title="Scan food QR">
+          <div class="dashboard-box text-center p-4">
+            <div class="dashboard-icon">🍱</div>
+            <h5>Food Scanner</h5>
+          </div>
+        </a>
+      </div>
+      <div class="col-6 col-md-3">
+        <a href="gift.html" class="text-decoration-none text-dark" data-bs-toggle="tooltip" title="Scan gift QR">
+          <div class="dashboard-box text-center p-4">
+            <div class="dashboard-icon">🎁</div>
+            <h5>Gift Scanner</h5>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🌐 Footer -->
+  <div class="footer mt-auto">
+    Powered by <a href="https://urbancode.in" target="_blank">Urbancode Edutech Solutions Pvt Ltd</a>
+  </div>
+
+  <!-- Bootstrap JS for tooltip functionality -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el));
+
+    function logout() {
+      localStorage.removeItem("isLoggedIn");
+      window.location.href = "login.html";
+    }
+  </script>
+
+</body>
+</html>
