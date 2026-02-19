@@ -74,7 +74,7 @@ function login() {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
-    if (username === "Admin" && password === "bbmeet2026") {
+    if (username.toLowerCase() === "admin" && password === "bbmeet2026") {
 
         localStorage.setItem("isLoggedIn", "true");
 

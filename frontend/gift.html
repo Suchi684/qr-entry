@@ -110,7 +110,7 @@
         }
 
         const payload = await response.json();
-        upsertMember(payload.attendee);
+        upsertMember(payload.member);
         renderScanTable();
 
         if (payload.alreadyScanned) {
