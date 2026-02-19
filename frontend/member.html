@@ -136,7 +136,7 @@
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const rows = XLSX.utils.sheet_to_json(sheet);
         const names = rows
-          .map(r => (r["BB MEET PAID MEMBERS LIST"] || r["Name"] || "").toString().trim())
+          .map(r => (r["Paid members"] || r["Name"] || "").toString().trim())
           .filter(Boolean);
 
         const response = await fetch(`${API_BASE}/members/import`, {
