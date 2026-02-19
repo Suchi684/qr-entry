@@ -220,7 +220,7 @@
             var btn = this;
             btn.disabled = true;
 
-            var W = 600, H = 800;
+            var W = 600, H = 850;
             var offscreen = document.createElement("canvas");
             offscreen.width = W;
             offscreen.height = H;
@@ -248,68 +248,83 @@
               ctx.drawImage(bg, (W - bw) / 2, (H - bh) / 2, bw, bh);
 
               // Semi-transparent overlay
-              ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+              ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
               ctx.fillRect(0, 0, W, H);
 
-              // Logos
-              var logoH = 75;
-              var bbW = (bbLogo.width / bbLogo.height) * logoH;
-              var ucW = (ucLogo.width / ucLogo.height) * (logoH * 0.5);
-              var gap = 20;
-              var totalW = bbW + gap + ucW;
-              ctx.drawImage(bbLogo, (W - totalW) / 2, 25, bbW, logoH);
-              ctx.drawImage(ucLogo, (W - totalW) / 2 + bbW + gap, 25 + (logoH - logoH * 0.5) / 2, ucW, logoH * 0.5);
+              // BB Logo with white rounded background
+              var bbH = 95;
+              var bbW2 = (bbLogo.width / bbLogo.height) * bbH;
+              var bbX = (W - bbW2) / 2;
+              var bbY = 15;
+              ctx.shadowColor = "rgba(0,0,0,0.4)";
+              ctx.shadowBlur = 15;
+              ctx.shadowOffsetY = 4;
+              ctx.fillStyle = "#ffffff";
+              ctx.beginPath();
+              if (ctx.roundRect) { ctx.roundRect(bbX - 10, bbY - 10, bbW2 + 20, bbH + 20, 15); }
+              else { ctx.rect(bbX - 10, bbY - 10, bbW2 + 20, bbH + 20); }
+              ctx.fill();
+              ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+              ctx.drawImage(bbLogo, bbX, bbY, bbW2, bbH);
 
-              // Title with party emojis
+              // Urbancode Logo (centered below BB)
+              var ucH = 40;
+              var ucW = (ucLogo.width / ucLogo.height) * ucH;
+              ctx.drawImage(ucLogo, (W - ucW) / 2, 135, ucW, ucH);
+
+              // Title line 1
               ctx.textAlign = "center";
               ctx.fillStyle = "#ffd700";
-              ctx.font = "bold 24px 'Segoe UI', sans-serif";
+              ctx.font = "bold 36px 'Segoe UI', sans-serif";
               ctx.shadowColor = "#ffcc00";
-              ctx.shadowBlur = 12;
-              ctx.fillText("\uD83C\uDF89 WELCOME TO BB GRAND MEET 2026 \uD83C\uDF89", W / 2, 140);
+              ctx.shadowBlur = 15;
+              ctx.fillText("\uD83C\uDF89 WELCOME TO BB", W / 2, 225);
+              // Title line 2
+              ctx.fillText("GRAND MEET 2026 \uD83C\uDF89", W / 2, 268);
               ctx.shadowBlur = 0;
 
-              // Attendee name
-              ctx.fillStyle = "#ffffff";
-              ctx.font = "bold 30px 'Segoe UI', sans-serif";
-              ctx.fillText(member.name, W / 2, 190);
+              // Card background
+              var cardX = 40, cardY = 295, cardW = 520, cardH = 450;
+              ctx.fillStyle = "rgba(55, 0, 0, 0.5)";
+              ctx.beginPath();
+              if (ctx.roundRect) { ctx.roundRect(cardX, cardY, cardW, cardH, 20); }
+              else { ctx.rect(cardX, cardY, cardW, cardH); }
+              ctx.fill();
+              // Card gold border
+              ctx.strokeStyle = "rgba(255, 215, 0, 0.6)";
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              if (ctx.roundRect) { ctx.roundRect(cardX, cardY, cardW, cardH, 20); }
+              else { ctx.rect(cardX, cardY, cardW, cardH); }
+              ctx.stroke();
 
-              // Draw QR code
+              // Attendee name inside card
+              ctx.fillStyle = "#ffffff";
+              ctx.font = "bold 28px 'Segoe UI', sans-serif";
+              ctx.fillText(member.name, W / 2, cardY + 60);
+
+              // QR code inside card
               var qr = document.getElementById("qrCanvas");
-              var qrSize = 280;
+              var qrSize = 270;
               var qrX = (W - qrSize) / 2;
-              var qrY = 235;
+              var qrY = cardY + 105;
 
               // White rounded background for QR
               ctx.fillStyle = "#ffffff";
               ctx.beginPath();
-              if (ctx.roundRect) {
-                ctx.roundRect(qrX - 15, qrY - 15, qrSize + 30, qrSize + 30, 15);
-              } else {
-                ctx.rect(qrX - 15, qrY - 15, qrSize + 30, qrSize + 30);
-              }
+              if (ctx.roundRect) { ctx.roundRect(qrX - 15, qrY - 15, qrSize + 30, qrSize + 30, 15); }
+              else { ctx.rect(qrX - 15, qrY - 15, qrSize + 30, qrSize + 30); }
               ctx.fill();
               ctx.drawImage(qr, qrX, qrY, qrSize, qrSize);
-
-              // Gold border around QR
-              ctx.strokeStyle = "rgba(255, 215, 0, 0.6)";
-              ctx.lineWidth = 2;
-              ctx.beginPath();
-              if (ctx.roundRect) {
-                ctx.roundRect(qrX - 15, qrY - 15, qrSize + 30, qrSize + 30, 15);
-              } else {
-                ctx.rect(qrX - 15, qrY - 15, qrSize + 30, qrSize + 30);
-              }
-              ctx.stroke();
 
               // Footer text
               ctx.fillStyle = "#ffd700";
               ctx.font = "16px 'Segoe UI', sans-serif";
-              ctx.fillText("BB Meet | QR Pass", W / 2, qrY + qrSize + 60);
+              ctx.fillText("BB Meet | QR Pass", W / 2, cardY + cardH + 35);
 
               ctx.fillStyle = "rgba(255,255,255,0.7)";
               ctx.font = "12px 'Segoe UI', sans-serif";
-              ctx.fillText("Powered by Urbancode Edutech Solutions Pvt Ltd", W / 2, H - 30);
+              ctx.fillText("Powered by Urbancode Edutech Solutions Pvt Ltd", W / 2, H - 15);
 
               // Download
               var a = document.createElement("a");
