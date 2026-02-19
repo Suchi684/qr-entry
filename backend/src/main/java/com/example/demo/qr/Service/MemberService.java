@@ -2,6 +2,7 @@ package com.example.demo.qr.Service;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,20 @@ public class MemberService {
 
     public List<Member> listAll() {
         return memberRepository.findAll();
+    }
+
+    public Member findMemberById(String id) {
+        if (id == null || id.isBlank()) {
+            throw new IllegalArgumentException("ID is required");
+        }
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(id);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid ID format");
+        }
+        return memberRepository.findById(uuid)
+            .orElseThrow(() -> new MemberNotFoundException("Member not found"));
     }
 
     public Member findByName(String name) {

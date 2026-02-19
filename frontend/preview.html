@@ -187,15 +187,15 @@
       return urlParams.get(param);
     }
 
-    const member = getQueryParam("member");
+    const uid = getQueryParam("uid");
 
-    if (!member) {
-      document.getElementById("qrName").textContent = "No name provided";
-      Swal.fire("Error", "No candidate name provided in the URL.", "error");
+    if (!uid) {
+      document.getElementById("qrName").textContent = "No ID provided";
+      Swal.fire("Error", "No member ID provided in the URL.", "error");
     } else {
       document.getElementById("qrName").textContent = "Loading...";
 
-      fetch(`${API_BASE}/members/lookup?member=${encodeURIComponent(member)}`)
+      fetch(`${API_BASE}/members/lookup?uid=${encodeURIComponent(uid)}`)
         .then(response => {
           if (response.status === 404) {
             throw new Error("NOT_FOUND");
@@ -225,7 +225,7 @@
           console.error(err);
           document.getElementById("qrName").textContent = "Not Found";
           if (err.message === "NOT_FOUND") {
-            Swal.fire("Error", `"${member}" is not a registered member.`, "error");
+            Swal.fire("Error", "Member not found.", "error");
           } else {
             Swal.fire("Error", "Unable to verify member from backend.", "error");
           }

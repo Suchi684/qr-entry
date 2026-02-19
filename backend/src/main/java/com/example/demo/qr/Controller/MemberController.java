@@ -37,9 +37,9 @@ public class MemberController {
     }
 
     @GetMapping("/lookup")
-    public ResponseEntity<?> lookup(@RequestParam String member) {
+    public ResponseEntity<?> lookup(@RequestParam String uid) {
         try {
-            Member foundMember = memberService.findByName(member);
+            Member foundMember = memberService.findMemberById(uid);
             return ResponseEntity.ok(MemberResponse.from(foundMember));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));

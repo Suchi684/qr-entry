@@ -182,7 +182,7 @@
         shareBtn.textContent = "Copy QR Link";
         shareBtn.onclick = () => {
           const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
-          const link = `${window.location.origin}${basePath}/preview.html?member=${encodeURIComponent(m.name).replace(/%20/g, '+')}`;
+          const link = `${window.location.origin}${basePath}/preview.html?uid=${encodeURIComponent(m.id)}`;
           navigator.clipboard.writeText(link);
           Swal.fire("Copied", "QR preview link copied to clipboard.", "success");
         };
