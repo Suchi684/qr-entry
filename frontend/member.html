@@ -136,9 +136,12 @@
         const data = await file.arrayBuffer();
         const workbook = XLSX.read(data, { type: "array" });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(sheet);
+        const rows = XLSX.utils.sheet_to_json(sheet, { raw: false });
         const names = rows
-          .map(r => (r["Paid members"] || r["Name"] || "").toString().trim())
+          .map(r => {
+            const key = Object.keys(r).find(k => k.trim() === "Paid members" || k.trim() === "Name");
+            return key ? r[key].toString().trim() : "";
+          })
           .filter(Boolean);
 
         const response = await fetch(`${API_BASE}/members/import`, {
