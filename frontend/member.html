@@ -262,10 +262,12 @@
             ctx.font = "bold 28px 'Segoe UI', sans-serif";
             ctx.fillText(m.name, W / 2, cardY + 60);
 
-            // QR code inside card
+            // QR code inside card (generate high-res QR for download)
             var qrSize = 270;
             var qrX = (W - qrSize) / 2;
             var qrY = cardY + 105;
+            var dlQr = document.createElement("canvas");
+            QRCode.toCanvas(dlQr, m.name, { width: qrSize });
 
             // White rounded background for QR
             ctx.fillStyle = "#ffffff";
@@ -273,7 +275,7 @@
             if (ctx.roundRect) { ctx.roundRect(qrX - 15, qrY - 15, qrSize + 30, qrSize + 30, 15); }
             else { ctx.rect(qrX - 15, qrY - 15, qrSize + 30, qrSize + 30); }
             ctx.fill();
-            ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
+            ctx.drawImage(dlQr, qrX, qrY, qrSize, qrSize);
 
             // Footer text
             ctx.fillStyle = "#ffd700";
